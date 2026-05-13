@@ -1,0 +1,128 @@
+# proqramlasdirma-layihe
+using System;
+using System.Collections.Generic;
+
+namespace Ders1
+{
+    public class isci
+    {
+        public int Id { get; set; }
+        public string Ad { get; set; }
+        public string Soyad { get; set; }
+        public string Vezife { get; set; }
+        public decimal Maas { get; set; }
+    }
+
+    public class IsciBazasi
+    {
+        public List<isci> isciler = new List<isci>();
+
+        public void ElaveEt(isci yeni)
+        {
+            yeni.Id = isciler.Count + 1;
+            isciler.Add(yeni);
+            Console.WriteLine("\n>>> İşçi uğurla əlavə edildi.");
+        }
+
+        public void Baza()
+        {
+            Console.WriteLine("\n--- İşçi Bazası ---");
+            if (isciler.Count == 0)
+            {
+                Console.WriteLine("Siyahıda işçi yoxdur.");
+                return;
+            }
+            foreach (var item in isciler)
+            {
+                Console.WriteLine($"ID: {item.Id} | Ad: {item.Ad} | Soyad: {item.Soyad} | Vəzifə: {item.Vezife} | Maaş: {item.Maas}");
+            }
+        }
+
+        public void Sil(int id)
+        {
+            var tapildi = isciler.Find(Id == id);
+            if (tapildi != null)
+            {
+                isciler.Remove(tapildi);
+                Console.WriteLine($"\n>>> {tapildi.Ad} {tapildi.Soyad} sistemdən silindi.");
+            }
+            else
+            {
+                Console.WriteLine("\n>>> Xəta: Bu ID-yə uyğun işçi tapılmadı.");
+            }
+        }
+
+        public void LimitdenCox(decimal limit)
+        {
+            Console.WriteLine($"\n--- Maaşı {limit}-dən çox olanlar ---");
+            bool tapildi = false;
+            foreach (var item in isciler)
+            {
+                if (item.Maas > limit)
+                {
+                    Console.WriteLine($"Ad: {item.Ad} | Soyad: {item.Soyad} | Maaş: {item.Maas}");
+                    tapildi = true;
+                }
+            }
+            if (tapildi==false) Console.WriteLine("Uyğun işçi tapılmadı.");
+        }
+    }
+
+    class Program
+    {
+        static IsciBazasi hrBaza = new IsciBazasi();
+
+        static void Main(string)
+        {
+            while (true)
+            {
+                Console.WriteLine("\n========== HR mini ERP ==========");
+                Console.WriteLine("1. İşçi elave et");
+                Console.WriteLine("2. İşçi bazasını göstər");
+                Console.WriteLine("3. Sistemden çıxış");
+                Console.WriteLine("4. İşçi sil (ID ile)");
+                Console.WriteLine("5. Maaş limitine görə axtar");
+                Console.WriteLine("=================================");
+                Console.Write("Seçiminizi daxil edin: ");
+
+                string secim = Console.ReadLine();
+
+                switch (secim)
+                {
+                    case "1":
+                        isci yeni = new isci();
+                        Console.Write("Ad: "); yeni.Ad = Console.ReadLine();
+                        Console.Write("Soyad: "); yeni.Soyad = Console.ReadLine();
+                        Console.Write("Vəzifə: "); yeni.Vezife = Console.ReadLine();
+                        Console.Write("Maaş: "); yeni.Maas = decimal.Parse(Console.ReadLine());
+                        hrBaza.ElaveEt(yeni);
+                        break;
+
+                    case "2":
+                        hrBaza.Baza();
+                        break;
+
+                    case "3":
+                        Console.WriteLine("Sistemden çıxış edilir...");
+                        return;
+
+                    case "4":
+                        Console.Write("Silmek istediyiniz işçinin ID-sini yazın: ");
+                        int silID = int.Parse(Console.ReadLine());
+                        hrBaza.Sil(silID);
+                        break;
+
+                    case "5":
+                        Console.Write("Minimum maaş limitini daxil edin: ");
+                        decimal limit = decimal.Parse(Console.ReadLine());
+                        hrBaza.LimitdenCox(limit);
+                        break;
+
+                    default:
+                        Console.WriteLine("\nXəta: Düzgün seçim daxil edin");
+                        break;
+                }
+            }
+        }
+    }
+}
